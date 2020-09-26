@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			.sub{
+				list-style: none;
+				background: white;
+				display: none;
+				text-align: center;
+			}	
+			#revealPanel{
+				background-image: url(Images/left.jpg);
+				background-size: cover;
+				background-repeat: no-repeat;
+			}
+			#Panel2{
+				background-image: url(Images/left2.jpg);
+				background-size: cover;
+				background-repeat: no-repeat;								
+			}
+			.wudian>li{
+				list-style-type:none ;
+			}
+			#revealPanel3{
+				background-image: url(Images/left.jpg);
+				background-size: cover;
+				background-repeat: no-repeat;
+			}
+			#listfile>li{
+				list-style-type:none ;
+			}
+			
+			.underline>a>img{
+				/* 支持IE6-9和Webkit浏览器(Chrome 18+, Safari 6.0+, and Opera 15+)
+				(注意:这段代码在Firefox上无效果。) */
+				 -webkit-filter: grayscale(1); /* Webkit */  
+				filter: gray; /* IE6-9 */    
+				filter: grayscale(1); /* W3C */  
+			}
+			#main4{
+				background-image:url(Images/back.jpg) ;
+				background-size: cover;
+				background-repeat: no-repeat; 
+				height: 633px;
+			}
+			
+			/* #bottom{
+				position: fixed;
+				bottom: 34px;
+				width: 485px;
+			}
+			#top{
+				position: fixed;
+				width:485px;
+				width: 467px;jQuerymobile.body的宽度 感觉宽度小了一点 
+			} */
+		</style>
+		<link rel="stylesheet" href="https://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.css">
+		<script src="https://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="https://apps.bdimg.com/libs/jquerymobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+		<!-- <script src="js/addF.js"></script> -->
+		<script src="js/login.js"></script>
+		<script src="js/insertpeople.js"></script>
+		<script src="js/showlist.js"></script>
+		<script src="js/setqianming.js"></script>
+		<script type="text/javascript">
+			
+			$(function(){	
+				var user;//判断登录状态 初始状态为未登录				
+				//时间关系未做
+				$("#okadd").click(function(){
+					location.href="#page2";
+				});
+				$("#selectHead").click(function(){
+					var $sub = $(".sub");
+					//停止当前正在运行的动画
+					$sub.stop();
+					$sub.slideDown();
+					//失去焦点时
+					$("#selectHead").blur(function(){											
+						$sub.stop();
+						$sub.slideUp();
+					});						
+				});
+				
+				$(".selectimg").click(function(){
+					var src = $(this).attr('src');
+					var $sub = $(".sub");
+					$sub.stop();
+					$sub.slideUp();
+					var img = $("<img width=80px height=80px src="+src+">");
+					$("#selectHead").replaceWith(img);
+					img.click(function(){
+						var oldimg = $(this);
+						$sub.stop();
+						$sub.slideDown();	
+						$(".sub>img").click(function(){
+							var src = $(this).attr('src');
+							var $sub = $(".sub");
+							$sub.stop();
+							$sub.slideUp();
+							oldimg.attr('src',src);
+						});
+						//$sub.children('img').each().click(twoclick($(this)));
+					});
+				});				
+				
+				//修改签名实现
+				$(".qianming").click(resetqianming);
+				//双击联系人事件
+				// var i = 0;
+				// $(".friend>ul>li").on('click', function () {
+				// 		i++;
+				//     setTimeout(function () {
+				//         i = 0;
+				//     }, 500);
+				//     if (i > 1) {
+				// 		location.href="#page4";
+				// 		var name = $(this).children().eq(0).html().split('>')[1];
+				// 		console.log(name);
+				// 		$("#header4>p").html(name+"(右滑返回)");
+				// 		i = 0;
+				//       }
+				// });
+				$("#main4").bind("swiperight",function(){
+					console.log('测试右滑');
+					location.href="#page3";
+				});
+				$("#message>ul>li").bind("swipeleft",function(){
+					console.log('测试左滑');						
+					var se=confirm("确认删除？");
+					if (se==true) {
+						$(this).remove();
+					 	console.log('确定删除了!');
+					}
+				});
+				$("#message>ul>li").click(function(){
+					location.href="#page4";
+					var name = $(this).children().eq(0).html().split('>')[1].split('<')[0];
+					console.log(name);
+					$("#header4>p").html(name+"(右滑返回)");
+				});
+				
+				// $(".friend>li").bind("swipeleft",function(){
+				// 	console.log($(this));
+				// 	console.log("测试左滑");
+				// 	
+				// 	// var span = $("<span></span>");
+				// 	// span.attr('class','ui-li-count');
+				// 	// var input = $("<input/>");
+				// 	// input.attr('type','button').attr('data-icon','delete').attr('value','删除');
+				// 	// span.append(input);
+				// 	//$(this).appendTo(span);
+				// });
+				
+				
+				$("#canvas").click(function(){//验证码点击切换
+					draw(show_num);  
+				});
+				var show_num = [];
+				draw(show_num);		//初始化验证码	
+			
+				
+				
+				$(".bottombutton>li").eq(0).click(function(){					
+					location.href="#page2";
+				});
+				$(".bottombutton>li").eq(1).click(function(){
+					var $zhuti = $("#page2").attr("data-theme");
+					console.log($zhuti);
+					if($zhuti == "b"){
+						$("#page3").attr("data-theme","b");
+						$("#page3").attr("class","ui-page ui-page-theme-b ui-page-active");
+					}else{
+						$("#page3").attr("data-theme","a");
+						$("#page3").attr("class","ui-page ui-page-theme-a ui-page-active");
+					}	
+					location.href="#page3";
+				});
+				$(".bottombutton>li").eq(2).click(function(){
+					$(".bottom").css("display","none");
+					$(".anniuzu").css("display","inline");
+					var Timeoutid = setTimeout(function(){
+						$(".bottom").css("display","inline");
+						$(".anniuzu").css("display","none");
+					},3000);
+				});
+				
+				
+				$(".out>li").eq(0).click(function(){
+					location.href="index.html";
+				});
+				$(".out>li").eq(1).click(function(){				
+					var $zhuti = $("#page2").attr("data-theme");
+					
+					if($zhuti == "a" || $zhuti==null){						
+						$("#page2").attr("data-theme","b");
+						$("#page2").attr("class","ui-page ui-page-theme-b ui-page-active");
+					}else{
+						$("#page2").attr("data-theme","a");
+						$("#page2").attr("class","ui-page ui-page-theme-a ui-page-active");
+					}
+					$(".bottom").css("display","inline");
+					$(".anniuzu").css("display","none");
+				});
+				
+				
+				$(".bottombutton3>li").eq(0).click(function(){					
+					var $zhuti = $("#page3").attr("data-theme");
+					console.log($zhuti);
+					if($zhuti == "b"){
+						$("#page2").attr("data-theme","b");
+						$("#page2").attr("class","ui-page ui-page-theme-b ui-page-active");
+					}else{
+						$("#page2").attr("data-theme","a");
+						$("#page2").attr("class","ui-page ui-page-theme-a ui-page-active");
+					}	
+					location.href="#page2";
+				});
+				
+
+				$(".bottombutton3>li").eq(1).click(function(){
+					location.href="#page3";
+				});
+				$(".bottombutton3>li").eq(2).click(function(){
+					$(".bottom3").css("display","none");
+					$(".anniuzu3").css("display","inline");
+					var Timeoutid = setTimeout(function(){
+						$(".bottom3").css("display","inline");
+						$(".anniuzu3").css("display","none");
+					},3000);
+					// clearTimeout(Timeoutid);
+					
+				});
+				
+				
+				$(".out3>li").eq(0).click(function(){
+					location.href="index.html";
+				});
+				$(".out3>li").eq(1).click(function(){
+					var $zhuti = $("#page3").attr("data-theme");
+					
+					if($zhuti == "a" || $zhuti==null){						
+						$("#page3").attr("data-theme","b");
+						$("#page3").attr("class","ui-page ui-page-theme-b ui-page-active");
+					}else{
+						$("#page3").attr("data-theme","a");
+						$("#page3").attr("class","ui-page ui-page-theme-a ui-page-active");
+					}
+					$(".bottom3").css("display","inline");
+					$(".anniuzu3").css("display","none");
+				});
+				
+				
+				$("#next").click(function(){					
+					if(sublim()){
+						var username0 = $("#name").val();
+						var psw0 = $("#psw").val();
+						if(username0 !="" && username0 !=null){
+							if(psw0 !="" && psw0 != null){
+								login(username0,psw0);
+								user = username0;
+								if(user!=""&&user!=null){
+									console.log(user+'存在');
+									insert(user);
+									showlist(user);									
+								}
+							}else{
+								alert("密码为空");
+								$("#psw").focus();
+								return false;
+							}
+						}else{
+							alert("用户名为空");
+							$("#name").focus();
+							return false;
+						}
+					}				
+				});
+				
+				function sublim(){
+							var val=document.getElementById("text").value;  
+				            var num = show_num.join("");
+				            if(val==''){
+				                alert('请输入验证码！');
+								draw(show_num);
+								return false;
+				            }else if(val.toLowerCase() == num.toLowerCase()){
+								return true;
+				            }else{
+				                alert('验证码错误！');
+				                document.getElementById("text").value='';
+				                draw(show_num);
+								return false;
+				            }				        			       						
+				}
+				function draw(show_num) {
+				        var canvas_width=document.getElementById('canvas').clientWidth;
+				        var canvas_height=document.getElementById('canvas').clientHeight;
+				        var canvas = document.getElementById("canvas");//获取到canvas的对象，演员
+				        var context = canvas.getContext("2d");//获取到canvas画图的环境，演员表演的舞台
+				        canvas.width = canvas_width;
+				        canvas.height = canvas_height;
+				        var sCode = "A,B,C,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,W,X,Y,Z,1,2,3,4,5,6,7,8,9,0,q,w,e,r,t,y,u,i,o,p,a,s,d,f,g,h,j,k,l,z,x,c,v,b,n,m";
+				        var aCode = sCode.split(",");
+				        var aLength = aCode.length;//获取到数组的长度
+							
+				        for (var i = 0; i <= 3; i++) {
+				            var j = Math.floor(Math.random() * aLength);//获取到随机的索引值
+				            var deg = Math.random() * 30 * Math.PI / 180;//产生0~30之间的随机弧度
+				            var txt = aCode[j];//得到随机的一个内容
+				            show_num[i] = txt;
+				            var x = 10 + i * 20;//文字在canvas上的x坐标
+				            var y = 20 + Math.random() * 8;//文字在canvas上的y坐标
+				            context.font = "bold 23px 微软雅黑";
+				
+				            context.translate(x, y);
+				            context.rotate(deg);
+				
+				            context.fillStyle = randomColor();
+				            context.fillText(txt, 0, 0);
+				
+				            context.rotate(-deg);
+				            context.translate(-x, -y);
+				        }
+				        for (var i = 0; i <= 5; i++) { //验证码上显示线条
+				            context.strokeStyle = randomColor();
+				            context.beginPath();
+				            context.moveTo(Math.random() * canvas_width, Math.random() * canvas_height);
+				            context.lineTo(Math.random() * canvas_width, Math.random() * canvas_height);
+				            context.stroke();
+				        }
+				        for (var i = 0; i <= 30; i++) { //验证码上显示小点
+				            context.strokeStyle = randomColor();
+				            context.beginPath();
+				            var x = Math.random() * canvas_width;
+				            var y = Math.random() * canvas_height;
+				            context.moveTo(x, y);
+				            context.lineTo(x + 1, y + 1);
+				            context.stroke();
+				        }
+				    }
+				function randomColor() {//得到随机的颜色值
+				        var r = Math.floor(Math.random() * 256);
+				        var g = Math.floor(Math.random() * 256);
+				        var b = Math.floor(Math.random() * 256);
+				        return "rgb(" + r + "," + g + "," + b + ")";
+				    }			
+				
+			})
+		</script>
+	</head>
+	<body>
+		<div id="page1" data-role="page" data-theme="a" name="page">
+			<div data-role="header" >
+				<h1>登录</h1>
+			</div>
+			<div data-role="content">
+				<input type="text" placeholder="用户名:" name="username" id="name"/>
+				<input type="password" placeholder="密码:" name="" id="psw"/>
+				
+				<input type="text" value="" placeholder="请输入验证码" id ="text">	
+				<canvas id="canvas" width="100" height="34"  
+						 style="border: 1px solid #ccc;
+						   border-radius: 5px;">
+				</canvas>														
+<!-- 				<button class="btn" onclick="sublim()">提交</button> -->
+				<!-- <button id="zhuti">主题切换</button> -->
+				<button id="next" class="ui-btn ui-corner-all" >登录</button>
+				<a href="register.html"  target="_top">注册账号</a>
+				<!-- <a href="">忘记密码</a> -->
+			</div>
+			<div data-role="footer">
+				<h1>页脚</h1>
+			</div>
+		</div>
+				
+		<div id="page2" data-role="page" name="page">
+			<div data-role="panel" id="revealPanel" data-display="overlay" data-position="left">
+			    <p>已打卡127天</p>
+			    
+			    <span>☆☆☆☆☆</span><br><br>
+			    <span class="qianming">编辑个性签名...</span>
+			    <div class="message">
+			        <ul class="wudian">
+			            <li>天气</li><br>
+			            <li>钱包</li><br>
+			            <li>心情</li><br>
+			            <li>收藏</li><br>
+			            <li>相册</li><br>
+			            <li>文件</li><br>
+			            <li>免流量特权</li>
+			        </ul>
+				</div>	
+			</div>
+			<div data-role="popup" id="myPopup" class="ui-content">
+				<h3 align="center">添加联系人</h3>
+				
+					<li class="ui-field-contain">
+					<label>名字:</label>									
+					<input type="text" name="name" id="name"/>
+					</li>
+					<li class="ui-field-contain">
+							
+					</li>
+					<li class="ui-field-contain">
+					<label>分组:</label>									
+					<input type="text" name="group" id="group" style="border:none;"/>
+					</li>
+					<button id="selectHead" class="ui-btn ui-corner-all" style="background: white;">选择头像</button>		
+					<ul class="sub">
+						</hr>
+						<hr><img class="selectimg" src="Images/img01.png" width="80px" height="80px" align="center"></hr>
+						<hr><img class="selectimg" src="Images/img02.png" width="80px" height="80px" align="center"></hr>
+						<hr><img class="selectimg" src="Images/img03.png" width="80px" height="80px" align="center"></hr>
+						<hr><img class="selectimg" src="Images/img04.png" width="80px" height="80px" align="center"></hr>
+						<hr><img class="selectimg" src="Images/img05.png" width="80px" height="80px" align="center"></hr>
+						<hr><img class="selectimg" src="Images/img06.png" width="80px" height="80px" align="center"></hr>
+						<hr><img class="selectimg" src="Images/img07.png" width="80px" height="80px" align="center"></hr>
+						<hr><img class="selectimg" src="Images/img08.png" width="80px" height="80px" align="center"></hr>
+						<hr><img class="selectimg" src="Images/img09.png" width="80px" height="80px" align="center"></hr>
+						<hr/>
+					</ul>
+					</br>
+					<button id="okadd" style="background: white;"class="ui-btn ui-corner-all">确定</button>
+			</div>			
+			<div id="top" data-role="header" data-position="fixed">
+				<div data-role="header">
+				      <a href="#revealPanel" data-swipe-close="true" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext"></a>  
+				      <a href="#myPopup" data-rel="popup" class="ui-btn ui-btn-right ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext"></a>
+				     <p align="center">联系人</p>
+				</div>
+			</div>
+			<div data-role="content">	
+								
+				<div id="peoplelist" >
+					<input id="myFilter" data-type="search" placeholder="根据名称搜索..">
+					<ul data-role="listview" data-inset="true" data-filter="true" data-input="#myFilter">
+						<div data-role="collapsible" class="friend">
+						  <h3>家人</h3>
+						  <ul data-role="listview" data-inset="true" class="jiaren" data-filter="true" data-input="#myFilter">
+							<!-- <li class="online"><a href=""><img src="Images/img02.png">赵三</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>						
+							</li>
+							<li class="online"><a href=""><img src="Images/img02.png">李四</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>
+							</li>
+							<li class="underline"><a href=""><img src="Images/img02.png">李四</a>
+								<p class="ui-li-aside"><strong>离线</strong></p>
+							</li>
+							<li class="underline"><a href=""><img src="Images/img02.png">李四</a>
+								<p class="ui-li-aside"><strong>离线</strong></p>
+							</li>
+							<li class="underline"><a href=""><img src="Images/img02.png">李四</a>
+								<p class="ui-li-aside"><strong>离线</strong></p>	
+							</li> -->
+						  </ul>
+						</div>
+												
+						<div data-role="collapsible" class="friend">
+						  <h3>朋友</h3>
+						  <ul data-role="listview" data-inset="true" class="pengyou" data-filter="true" data-input="#myFilter">
+							<!-- <li class="online">
+								<a href=""><img src="Images/img01.png">李四</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>
+							</li>
+							<li class="online">
+								<a href=""><img src="Images/img01.png">李四</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>
+							</li>
+							<li class="online">
+								<a href=""><img src="Images/img01.png">李四</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>
+							</li>
+							<li class="underline">
+								<a href=""><img src="Images/img01.png">李四</a>
+								<p class="ui-li-aside"><strong>离线</strong></p>
+							</li>
+							<li class="underline">
+								<a href=""><img src="Images/img01.png">李四</a>
+								<p class="ui-li-aside"><strong>离线</strong></p>
+							</li> -->
+						   </ul>
+						</div>
+						
+						<div data-role="collapsible" class="friend">
+						  <h3>同学</h3>
+						  <ul data-role="listview" data-inset="true" class="tongxue" data-filter="true" data-input="#myFilter">
+							<!-- <li class="online"><a href=""><img src="Images/img04.png">李四</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>
+							</li>
+							<li class="online"><a href=""><img src="Images/img04.png">李四</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>
+							</li>
+							<li class="online"><a href=""><img src="Images/img04.png">李四</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>
+							</li>
+							<li class="online"><a href=""><img src="Images/img04.png">李四</a>
+								<p class="ui-li-aside"><strong>在线</strong></p>
+							</li>							
+							<li class="underline"><a href=""><img src="Images/img04.png">李四</a>
+								<p class="ui-li-aside"><strong>离线</strong></p>
+							</li> -->
+							
+							</ul>
+						</div>
+					</ul>
+				</div>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div class="bottom" data-role="navbar" >
+					<ul class="bottombutton">
+						<li><a href="" data-icon="user">联系人</a></li>
+						<li><a href="" data-icon="comment">消息</a></li>											
+						<li><a href="" data-icon="gear">设置</a></li>
+																	
+					</ul>										
+				</div>
+				<div class="anniuzu" data-role="navbar" style="display: none;"> 
+					<ul class="out">
+						<li><a data-icon="delete">退出</a></li>
+						<li><a data-icon="star">主题切换</a></li>												
+					</ul>	
+				</div>					
+			</div>		
+		</div>
+		<div id="page3" data-role="page" name="page">
+			<div data-role="panel" id="revealPanel3" data-display="overlay" data-position="left">
+			    <p>已打卡127天</p>
+			    
+			    <span>☆☆☆☆☆</span><br><br>
+				
+			    <span class="qianming">编辑个性签名...</span>
+			    <div class="message">
+			        <ul class="wudian">
+			            <li>天气</li><br>
+			            <li>钱包</li><br>
+			            <li>心情</li><br>
+			            <li>收藏</li><br>
+			            <li>相册</li><br>
+			            <li>文件</li><br>
+			            <li>免流量特权</li>
+			        </ul>
+			    </div>	
+			</div>
+			<div  data-role="header" data-position="fixed">
+				<a href="#revealPanel3" data-swipe-close="true" class="ui-btn ui-corner-all ui-icon-bars ui-btn-icon-notext"></a>  
+				
+				<p align="center">消息</p>
+			</div>
+			<div data-role="content" id="main3">				
+				<div id="message">
+					<input id="Filter2" data-type="search" placeholder="根据名称搜索..">
+					<ul data-role="listview" data-inset="true" data-filter="true" data-input="#Filter2" >						
+						<li>
+							<a href=""><img src="Images/img02.png">赵三
+							<p>今天晚上吃啥</p>
+							</a>											
+						</li>
+						<li >
+							<a href=""><img src="Images/img01.png">赵四
+							<p>作业写完没有</p>
+							</a>											
+						</li>
+						<li >
+							<a href=""><img src="Images/img03.png">赵中
+							<p>啥玩意？</p>
+							</a>											
+						</li>
+						<li >
+							<a href=""><img src="Images/img04.png">赵2
+							<p>你是？</p>
+							</a>											
+						</li>
+						<li class="underline">
+							<a href=""><img src="Images/img05.png">赵3
+							<p>你是？</p>
+							</a>											
+						</li>
+						<li class="underline">
+							<a href=""><img src="Images/img06.png">赵4
+							<p>你是？</p>
+							</a>											
+						</li>
+						<li class="underline">
+							<a href=""><img src="Images/img07.png">赵5</img>
+							<p>你是？</p>
+							</a>											
+						</li>
+					</ul>
+				</div>
+			</div>			
+			<div data-role="footer" data-position="fixed">
+				<div class="bottom3" data-role="navbar" >
+					<ul class="bottombutton3">				
+						<li><a href="" data-icon="user">联系人</a></li>													
+						<li><a href="" data-icon="comment">消息 </a></li>
+						<li><a href="" data-icon="gear">设置</a></li>										        											
+					</ul>										
+				</div>
+				<div class="anniuzu3" data-role="navbar" style="display: none;"> 
+					<ul class="out3">
+						<li><a data-icon="delete">退出</a></li>
+						<li><a data-icon="star">主题切换</a></li>												
+					</ul>	
+				</div>								
+			</div>
+		</div>	
+		
+		<div id="page4" data-role="page" name="page">
+			
+			<div id="header4" data-role="header" data-position="fixed">
+				<p align="center"></p>
+			</div>
+			<div data-role="content" id="main4">
+				
+			</div>
+			
+			<div data-role="footer" data-position="fixed">
+				
+			</div>
+		</div>
+
+
+	</body>
+</html>
